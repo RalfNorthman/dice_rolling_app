@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Random
+import Char
 
 
 main =
@@ -25,7 +26,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model 0, Cmd.none )
+    ( Model 1, Cmd.none )
 
 
 
@@ -60,9 +61,17 @@ type Msg
     | NewFace Int
 
 
+dieFaceIcon : Int -> String
+dieFaceIcon dieResult =
+    dieResult
+        + 9855
+        |> Char.fromCode
+        |> String.fromChar
+
+
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text (toString model.dieFace) ]
+        [ h1 [] [ text (dieFaceIcon model.dieFace) ]
         , button [ onClick Roll ] [ text "Roll" ]
         ]
