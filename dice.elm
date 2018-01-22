@@ -20,14 +20,12 @@ main =
 
 
 type alias Model =
-    { dieFaceOne : Int
-    , dieFaceTwo : Int
-    }
+    List Int
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model 1 1, Cmd.none )
+    ( [ 1, 1, 1 ], Cmd.none )
 
 
 
@@ -39,19 +37,19 @@ dieRoll =
     Random.int 1 6
 
 
-rollTwoDice : Random.Generator ( Int, Int )
-rollTwoDice =
-    Random.pair dieRoll dieRoll
+rollDice : Random.Generator (List Int)
+rollDice =
+    Random.list 3 dieRoll
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Roll ->
-            ( model, Random.generate NewFaces rollTwoDice )
+            ( model, Random.generate NewFaces rollDice )
 
-        NewFaces ( newFace1, newFace2 ) ->
-            ( Model newFace1 newFace2, Cmd.none )
+        NewFaces list ->
+            ( list, Cmd.none )
 
 
 
@@ -69,7 +67,7 @@ subs model =
 
 type Msg
     = Roll
-    | NewFaces ( Int, Int )
+    | NewFaces (List Int)
 
 
 dieFaceIcon : Int -> String
@@ -80,16 +78,26 @@ dieFaceIcon dieResult =
         |> String.fromChar
 
 
-twoDieFacesText : Model -> Html Msg
-twoDieFacesText model =
-    dieFaceIcon model.dieFaceOne
-        ++ dieFaceIcon model.dieFaceTwo
-        |> text
+dieFacesText : Model -> Html Msg
+dieFacesText model =
+    model
+        |> List.map dieFaceIcon
+        |> String.concat
+        |> Html.text
+
+
+sumDice : Model -> Html Msg
+sumDice model =
+    model
+        |> List.sum
+        |> toString
+        |> (\s -> String.padLeft 4 ' ' s)
+        |> Html.text
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ twoDieFacesText model ]
+        [ h1 [] [ dieFacesText model, sumDice model ]
         , button [ onClick Roll ] [ text "Roll" ]
         ]
