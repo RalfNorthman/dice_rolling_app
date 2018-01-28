@@ -1,7 +1,13 @@
 module Main exposing (..)
 
-import Html exposing (..)
-import Html.Events exposing (onClick)
+import Color
+import Html exposing (Html, pre, div, program)
+import Element.Events exposing (onClick)
+import Element exposing (..)
+import Element.Attributes exposing (..)
+import Style exposing (..)
+import Style.Color as Color
+import Style.Font as Font
 import Random
 import Char
 
@@ -95,10 +101,40 @@ sumDice model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 []
-            [ text <| dieFacesText model
-            , pre [] [ text <| sumDice model ]
+    layout stylesheet
+        (row MyRowStyle
+            [ padding 10, spacing 7 ]
+            [ el MyStyle [] (model |> dieFacesText |> text)
+            , el MyStyle [] (model |> sumDice |> text)
+            , button MyStyle [ onClick Roll ] (text "Roll")
             ]
-        , button [ onClick Roll ] [ text "Roll" ]
+        )
+
+
+
+-- STYLE
+
+
+type MyStyles
+    = Title
+    | MyRowStyle
+    | MyStyle
+
+
+stylesheet =
+    styleSheet
+        [ style Title
+            [ Color.text Color.darkGrey
+            , Color.background Color.white
+            , Font.size 5
+            , Font.typeface
+                [ Font.font "Helvetica"
+                , Font.font "Comic Sans"
+                , Font.font "Papyrus"
+                ]
+            ]
+        , style MyRowStyle
+            []
+        , style MyStyle
+            []
         ]
