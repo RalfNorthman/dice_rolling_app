@@ -78,26 +78,27 @@ dieFaceIcon dieResult =
         |> String.fromChar
 
 
-dieFacesText : Model -> Html Msg
+dieFacesText : Model -> String
 dieFacesText model =
     model
         |> List.map dieFaceIcon
         |> String.concat
-        |> Html.text
 
 
-sumDice : Model -> Html Msg
+sumDice : Model -> String
 sumDice model =
     model
         |> List.sum
         |> toString
-        |> (\s -> String.padLeft 4 ' ' s)
-        |> Html.text
+        |> (\s -> String.padLeft 3 ' ' s)
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ dieFacesText model, sumDice model ]
+        [ h1 []
+            [ text <| dieFacesText model
+            , pre [] [ text <| sumDice model ]
+            ]
         , button [ onClick Roll ] [ text "Roll" ]
         ]
